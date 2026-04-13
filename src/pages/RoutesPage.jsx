@@ -1,8 +1,10 @@
 import { Bus, MapPin } from 'lucide-react';
 import useAppStore from '../store/useAppStore';
 import { Link } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function RoutesPage() {
+  const { t } = useTranslation();
   const routes = useAppStore((s) => s.routes);
   const getRouteStops = useAppStore((s) => s.getRouteStops);
   const getAverageRating = useAppStore((s) => s.getAverageRating);
@@ -13,9 +15,9 @@ export default function RoutesPage() {
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Bus className="w-6 h-6 text-primary-500" />
-            Bus Routes
+            {t('busRoutes')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">All available bus routes in Algiers</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{t('allAvailableRoutes')}</p>
         </div>
       </div>
 
@@ -38,7 +40,7 @@ export default function RoutesPage() {
                 <div className="flex-1">
                   <h3 className="font-semibold text-sm">{route.name}</h3>
                   <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
-                    <span><MapPin className="w-3 h-3 inline" /> {stops.length} stops</span>
+                    <span><MapPin className="w-3 h-3 inline" /> {t('stopsCount', { count: stops.length })}</span>
                     {avgRating > 0 && <span>★ {avgRating.toFixed(1)}</span>}
                   </div>
                 </div>
@@ -61,13 +63,13 @@ export default function RoutesPage() {
                   to={`/ratings?route=${route.id}`}
                   className="flex-1 text-center py-1.5 text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors"
                 >
-                  ⭐ Reviews
+                  {t('reviews')}
                 </Link>
                 <Link
                   to="/"
                   className="flex-1 text-center py-1.5 text-xs font-medium bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-lg transition-colors"
                 >
-                  🗺️ View on Map
+                  {t('viewOnMap')}
                 </Link>
               </div>
             </div>

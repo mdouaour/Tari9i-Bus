@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { demoRoutes, demoStops, demoRouteStops, demoBuses, demoRatings } from '../lib/demoData';
+import { languages, defaultLanguage } from '../lib/i18n';
 
 const useAppStore = create((set, get) => ({
   // Theme
@@ -10,6 +11,16 @@ const useAppStore = create((set, get) => ({
       document.documentElement.classList.toggle('dark', newMode);
       return { darkMode: newMode };
     });
+  },
+
+  // Language
+  language: defaultLanguage,
+  setLanguage: (lang) => {
+    if (!languages[lang]) return;
+    const dir = languages[lang].dir;
+    document.documentElement.setAttribute('dir', dir);
+    document.documentElement.setAttribute('lang', lang);
+    set({ language: lang });
   },
 
   // Routes

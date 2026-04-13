@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, Polyline, Marker, Popup, useMapEvents } from '
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useAppStore from '../../store/useAppStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 // Fix leaflet default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -41,6 +42,7 @@ function MapClickHandler({ onMapClick }) {
 }
 
 export default function BusMap({ onMapClick, searchResults, className = '' }) {
+  const { t } = useTranslation();
   const routes = useAppStore((s) => s.routes);
   const selectedRoute = useAppStore((s) => s.selectedRoute);
   const getRouteStops = useAppStore((s) => s.getRouteStops);
@@ -106,7 +108,7 @@ export default function BusMap({ onMapClick, searchResults, className = '' }) {
           <Marker key={busId} position={[loc.latitude, loc.longitude]} icon={createBusIcon()}>
             <Popup>
               <div className="text-sm">
-                <p className="font-semibold">Bus {bus.bus_number}</p>
+                <p className="font-semibold">{t('busLabel', { number: bus.bus_number })}</p>
                 <p>Near: {loc.nearStop}</p>
                 <p className="text-xs text-slate-400">{new Date(loc.timestamp).toLocaleTimeString()}</p>
               </div>
@@ -118,14 +120,14 @@ export default function BusMap({ onMapClick, searchResults, className = '' }) {
       {/* Search origin marker */}
       {searchOrigin && (
         <Marker position={[searchOrigin.lat, searchOrigin.lng]}>
-          <Popup>Your location (Start)</Popup>
+          <Popup>{t('yourLocation')}</Popup>
         </Marker>
       )}
 
       {/* Search destination marker */}
       {searchDestination && (
         <Marker position={[searchDestination.lat, searchDestination.lng]}>
-          <Popup>Destination</Popup>
+          <Popup>{t('destinationLabel')}</Popup>
         </Marker>
       )}
 

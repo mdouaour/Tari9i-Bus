@@ -2,8 +2,10 @@ import { useState } from 'react';
 import BusMap from '../components/map/BusMap';
 import SearchPanel from '../components/search/SearchPanel';
 import useAppStore from '../store/useAppStore';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function SearchPage() {
+  const { t } = useTranslation();
   const setSearchOrigin = useAppStore((s) => s.setSearchOrigin);
   const setSearchDestination = useAppStore((s) => s.setSearchDestination);
   const searchResults = useAppStore((s) => s.searchResults);
@@ -26,7 +28,7 @@ export default function SearchPage() {
 
         {mapSelectMode && (
           <div className="bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl p-3 text-sm text-primary-700 dark:text-primary-300">
-            👆 Click on the map to select your {mapSelectMode === 'origin' ? 'starting' : 'destination'} point
+            {mapSelectMode === 'origin' ? t('clickMapToSelectOrigin') : t('clickMapToSelectDest')}
           </div>
         )}
       </div>

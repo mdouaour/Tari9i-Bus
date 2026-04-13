@@ -2,8 +2,10 @@ import { useState } from 'react';
 import BusMap from '../components/map/BusMap';
 import RouteListPanel from '../components/map/RouteListPanel';
 import { useSimulation } from '../hooks/useSimulation';
+import { useTranslation } from '../hooks/useTranslation';
 
 export default function MapPage() {
+  const { t } = useTranslation();
   useSimulation();
   const [showPanel, setShowPanel] = useState(true);
 
@@ -19,7 +21,7 @@ export default function MapPage() {
         onClick={() => setShowPanel(!showPanel)}
         className="md:hidden absolute top-3 left-3 z-[500] bg-white dark:bg-slate-800 shadow-lg px-3 py-2 rounded-lg text-sm font-medium border border-slate-200 dark:border-slate-700"
       >
-        {showPanel ? '✕ Close' : '🚌 Routes'}
+        {showPanel ? t('close') : t('routesButton')}
       </button>
 
       {/* Mobile panel overlay */}

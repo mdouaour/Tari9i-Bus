@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { MapPin, Navigation, Clock, Footprints, ArrowRight, X } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function SearchPanel({ onSelectOnMap }) {
+  const { t } = useTranslation();
   const stops = useAppStore((s) => s.stops);
   const findRoutes = useAppStore((s) => s.findRoutes);
   const searchResults = useAppStore((s) => s.searchResults);
@@ -60,12 +62,12 @@ export default function SearchPanel({ onSelectOnMap }) {
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
         <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
           <Navigation className="w-5 h-5 text-primary-500" />
-          Find Your Route
+          {t('findYourRoute')}
         </h2>
 
         {/* Origin input */}
         <div className="relative mb-3">
-          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">From</label>
+          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">{t('from')}</label>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-green-500" />
@@ -77,7 +79,7 @@ export default function SearchPanel({ onSelectOnMap }) {
                   setShowOriginSuggestions(true);
                 }}
                 onFocus={() => setShowOriginSuggestions(true)}
-                placeholder="Start location..."
+                placeholder={t('startLocation')}
                 className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
               {showOriginSuggestions && filteredOriginStops.length > 0 && (
@@ -98,14 +100,14 @@ export default function SearchPanel({ onSelectOnMap }) {
               onClick={() => handleMapSelect('origin')}
               className="px-3 py-2 text-xs bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap"
             >
-              📍 Map
+              {t('selectOnMap')}
             </button>
           </div>
         </div>
 
         {/* Destination input */}
         <div className="relative mb-4">
-          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">To</label>
+          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">{t('to')}</label>
           <div className="flex gap-2">
             <div className="relative flex-1">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-red-500" />
@@ -117,7 +119,7 @@ export default function SearchPanel({ onSelectOnMap }) {
                   setShowDestSuggestions(true);
                 }}
                 onFocus={() => setShowDestSuggestions(true)}
-                placeholder="Destination..."
+                placeholder={t('destination')}
                 className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
               {showDestSuggestions && filteredDestStops.length > 0 && (
@@ -138,7 +140,7 @@ export default function SearchPanel({ onSelectOnMap }) {
               onClick={() => handleMapSelect('destination')}
               className="px-3 py-2 text-xs bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 whitespace-nowrap"
             >
-              📍 Map
+              {t('selectOnMap')}
             </button>
           </div>
         </div>
@@ -149,7 +151,7 @@ export default function SearchPanel({ onSelectOnMap }) {
             disabled={!searchOrigin || !searchDestination}
             className="flex-1 py-2.5 bg-primary-600 hover:bg-primary-700 disabled:bg-slate-300 disabled:dark:bg-slate-700 text-white rounded-lg font-medium text-sm transition-colors"
           >
-            Search Routes
+            {t('searchRoutes')}
           </button>
           {(searchOrigin || searchDestination || searchResults) && (
             <button
@@ -167,12 +169,12 @@ export default function SearchPanel({ onSelectOnMap }) {
         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
           <h3 className="font-semibold mb-3">
             {searchResults.length > 0
-              ? `${searchResults.length} route${searchResults.length > 1 ? 's' : ''} found`
-              : 'No routes found'}
+              ? t('routesFound', { count: searchResults.length })
+              : t('noRoutesFound')}
           </h3>
 
           {searchResults.length === 0 && (
-            <p className="text-sm text-slate-500">Try different locations or increase your search area.</p>
+            <p className="text-sm text-slate-500">{t('tryDifferentLocations')}</p>
           )}
 
           <div className="space-y-3">
@@ -187,7 +189,7 @@ export default function SearchPanel({ onSelectOnMap }) {
               >
                 {idx === 0 && (
                   <span className="text-xs font-medium text-green-600 dark:text-green-400 mb-1 block">
-                    ✨ Best Route
+                    {t('bestRoute')}
                   </span>
                 )}
 
@@ -204,21 +206,21 @@ export default function SearchPanel({ onSelectOnMap }) {
                 <div className="grid grid-cols-3 gap-2 text-xs text-slate-600 dark:text-slate-400 mb-2">
                   <div className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    ~{result.estimatedTime} min
+                    {t('estimatedTime', { time: result.estimatedTime })}
                   </div>
                   <div className="flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
-                    {result.numStops} stops
+                    {t('stopsCount', { count: result.numStops })}
                   </div>
                   <div className="flex items-center gap-1">
                     <Footprints className="w-3 h-3" />
-                    {(result.walkToStop + result.walkFromStop).toFixed(1)} km walk
+                    {t('kmWalk', { distance: (result.walkToStop + result.walkFromStop).toFixed(1) })}
                   </div>
                 </div>
 
                 <div className="flex items-center gap-1 text-xs flex-wrap">
                   <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded">
-                    🚶 Walk {result.walkToStop.toFixed(1)}km
+                    {t('walk', { distance: result.walkToStop.toFixed(1) })}
                   </span>
                   <ArrowRight className="w-3 h-3 text-slate-400" />
                   <span className="px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded">
@@ -230,7 +232,7 @@ export default function SearchPanel({ onSelectOnMap }) {
                   </span>
                   <ArrowRight className="w-3 h-3 text-slate-400" />
                   <span className="px-2 py-0.5 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded">
-                    🚶 Walk {result.walkFromStop.toFixed(1)}km
+                    {t('walk', { distance: result.walkFromStop.toFixed(1) })}
                   </span>
                 </div>
               </div>

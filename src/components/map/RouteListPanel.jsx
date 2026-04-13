@@ -1,7 +1,9 @@
 import { ChevronRight, MapPin } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function RouteListPanel() {
+  const { t } = useTranslation();
   const routes = useAppStore((s) => s.routes);
   const selectedRoute = useAppStore((s) => s.selectedRoute);
   const setSelectedRoute = useAppStore((s) => s.setSelectedRoute);
@@ -11,8 +13,8 @@ export default function RouteListPanel() {
   return (
     <div className="bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 overflow-y-auto">
       <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-        <h2 className="text-lg font-bold">Bus Routes</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Algiers transport network</p>
+        <h2 className="text-lg font-bold">{t('busRoutes')}</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t('algiersTransportNetwork')}</p>
       </div>
 
       {selectedRoute && (
@@ -20,7 +22,7 @@ export default function RouteListPanel() {
           onClick={() => setSelectedRoute(null)}
           className="w-full px-4 py-2 text-sm text-primary-600 dark:text-primary-400 hover:bg-slate-50 dark:hover:bg-slate-800 text-left border-b border-slate-200 dark:border-slate-700"
         >
-          ← Show all routes
+          {t('showAllRoutes')}
         </button>
       )}
 
@@ -50,7 +52,7 @@ export default function RouteListPanel() {
                   <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     <span className="flex items-center gap-0.5">
                       <MapPin className="w-3 h-3" />
-                      {stops.length} stops
+                      {t('stopsCount', { count: stops.length })}
                     </span>
                     {avgRating > 0 && (
                       <span className="flex items-center gap-0.5">
