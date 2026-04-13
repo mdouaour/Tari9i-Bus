@@ -3,7 +3,6 @@ import useAppStore from '../store/useAppStore';
 
 export function useSimulation() {
   const buses = useAppStore((s) => s.buses);
-  const routes = useAppStore((s) => s.routes);
   const simulateBusLocation = useAppStore((s) => s.simulateBusLocation);
   const intervalRef = useRef(null);
 

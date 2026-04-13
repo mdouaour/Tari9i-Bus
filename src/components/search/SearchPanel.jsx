@@ -18,7 +18,6 @@ export default function SearchPanel({ onSelectOnMap }) {
   const [destQuery, setDestQuery] = useState('');
   const [showOriginSuggestions, setShowOriginSuggestions] = useState(false);
   const [showDestSuggestions, setShowDestSuggestions] = useState(false);
-  const [mapSelectMode, setMapSelectMode] = useState(null);
 
   const filteredOriginStops = originQuery.length > 0
     ? stops.filter((s) => s.name.toLowerCase().includes(originQuery.toLowerCase()))
@@ -53,7 +52,6 @@ export default function SearchPanel({ onSelectOnMap }) {
   };
 
   const handleMapSelect = (type) => {
-    setMapSelectMode(type);
     if (onSelectOnMap) onSelectOnMap(type);
   };
 

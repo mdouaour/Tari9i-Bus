@@ -50,7 +50,7 @@ export default function Header() {
 
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5">
-              {Object.entries(languages).map(([code, { nativeName }]) => (
+              {Object.entries(languages).map(([code]) => (
                 <button
                   key={code}
                   onClick={() => setLanguage(code)}
