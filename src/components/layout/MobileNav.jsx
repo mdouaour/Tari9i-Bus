@@ -1,15 +1,17 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Map, Search, Bus, Star, Settings } from 'lucide-react';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function MobileNav() {
   const location = useLocation();
+  const { t } = useTranslation();
 
   const links = [
-    { to: '/', icon: Map, label: 'Map' },
-    { to: '/search', icon: Search, label: 'Search' },
-    { to: '/routes', icon: Bus, label: 'Routes' },
-    { to: '/ratings', icon: Star, label: 'Ratings' },
-    { to: '/admin', icon: Settings, label: 'Admin' },
+    { to: '/', icon: Map, label: t('navMap') },
+    { to: '/search', icon: Search, label: t('navSearch') },
+    { to: '/routes', icon: Bus, label: t('navRoutes') },
+    { to: '/ratings', icon: Star, label: t('navRatings') },
+    { to: '/admin', icon: Settings, label: t('navAdmin') },
   ];
 
   const isActive = (path) => location.pathname === path;

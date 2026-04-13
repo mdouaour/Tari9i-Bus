@@ -2,18 +2,21 @@ import { Link, useLocation } from 'react-router-dom';
 import { Bus, Map, Search, Star, Settings, Sun, Moon, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import useAppStore from '../../store/useAppStore';
+import { useTranslation } from '../../hooks/useTranslation';
+import { languages } from '../../lib/i18n';
 
 export default function Header() {
-  const { darkMode, toggleDarkMode } = useAppStore();
+  const { darkMode, toggleDarkMode, language, setLanguage } = useAppStore();
+  const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
   const links = [
-    { to: '/', icon: Map, label: 'Map' },
-    { to: '/search', icon: Search, label: 'Search' },
-    { to: '/routes', icon: Bus, label: 'Routes' },
-    { to: '/ratings', icon: Star, label: 'Ratings' },
-    { to: '/admin', icon: Settings, label: 'Admin' },
+    { to: '/', icon: Map, label: t('navMap') },
+    { to: '/search', icon: Search, label: t('navSearch') },
+    { to: '/routes', icon: Bus, label: t('navRoutes') },
+    { to: '/ratings', icon: Star, label: t('navRatings') },
+    { to: '/admin', icon: Settings, label: t('navAdmin') },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -24,7 +27,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-14">
           <Link to="/" className="flex items-center gap-2 font-bold text-lg text-primary-700 dark:text-primary-400">
             <Bus className="w-6 h-6" />
-            <span>TARIQI Bus</span>
+            <span>{t('appName')}</span>
           </Link>
 
           {/* Desktop nav */}
@@ -46,17 +49,32 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <div className="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5">
+              {Object.entries(languages).map(([code, { nativeName }]) => (
+                <button
+                  key={code}
+                  onClick={() => setLanguage(code)}
+                  className={`px-2 py-1 text-xs font-medium rounded transition-colors ${
+                    language === code
+                      ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                  }`}
+                >
+                  {code.toUpperCase()}
+                </button>
+              ))}
+            </div>
             <button
               onClick={toggleDarkMode}
               className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
-              aria-label="Toggle dark mode"
+              aria-label={t('toggleDarkMode')}
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
-              aria-label="Toggle menu"
+              aria-label={t('toggleMenu')}
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
