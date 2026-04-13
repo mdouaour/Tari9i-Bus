@@ -2,6 +2,7 @@
 // ALGERIA CITIES — major cities with map center + zoom
 // ============================================================
 export const ALGERIA_CITIES = [
+  { id: 'guelma',     name: 'Guelma',     nameAr: 'قالمة',       lat: 36.4622, lng:  7.4267, zoom: 13 },
   { id: 'alger',      name: 'Alger',      nameAr: 'الجزائر',     lat: 36.7538, lng:  3.0588, zoom: 12 },
   { id: 'oran',       name: 'Oran',       nameAr: 'وهران',       lat: 35.6969, lng: -0.6331, zoom: 13 },
   { id: 'constantine',name: 'Constantine',nameAr: 'قسنطينة',     lat: 36.3650, lng:  6.6147, zoom: 13 },
@@ -18,6 +19,10 @@ export const ALGERIA_CITIES = [
 // ROUTES
 // ============================================================
 export const demoRoutes = [
+  // ── Guelma ─────────────────────────────────────────────────
+  { id: '16', city: 'guelma', name: 'Ligne 1 - Centre Guelma → Héliopolis', bus_number: '1',  color: '#ef4444', status: 'active' },
+  { id: '17', city: 'guelma', name: 'Ligne 2 - Hammam Debagh → Guelma Gare', bus_number: '2', color: '#3b82f6', status: 'active' },
+  { id: '18', city: 'guelma', name: 'Ligne 3 - Bouchegouf → Ain Makhlouf',   bus_number: '3', color: '#10b981', status: 'active' },
   // ── Alger ──────────────────────────────────────────────────
   { id: '1', city: 'alger', name: 'Ligne 1 - Bab Ezzouar → Alger Centre', bus_number: '1',  color: '#ef4444', status: 'active' },
   { id: '2', city: 'alger', name: 'Ligne 33 - El Harrach → Hussein Dey',  bus_number: '33', color: '#3b82f6', status: 'active' },
@@ -45,6 +50,20 @@ export const demoRoutes = [
 // STOPS
 // ============================================================
 export const demoStops = [
+  // ── Guelma — Route 16 ──────────────────────────────────────
+  { id: 'sg1', city: 'guelma', name: 'Place du 8 Mai 1945',        latitude: 36.4622, longitude: 7.4267, route_ids: ['16'] },
+  { id: 'sg2', city: 'guelma', name: 'Hôpital Sébastopol',         latitude: 36.4650, longitude: 7.4310, route_ids: ['16'] },
+  { id: 'sg3', city: 'guelma', name: 'Hay Bouakal',                 latitude: 36.4590, longitude: 7.4380, route_ids: ['16'] },
+  { id: 'sg4', city: 'guelma', name: 'Héliopolis',                  latitude: 36.4520, longitude: 7.4630, route_ids: ['16'] },
+  // ── Guelma — Route 17 ──────────────────────────────────────
+  { id: 'sg5', city: 'guelma', name: 'Hammam Debagh',               latitude: 36.5050, longitude: 7.3700, route_ids: ['17'] },
+  { id: 'sg6', city: 'guelma', name: 'Oued Zenati',                 latitude: 36.4830, longitude: 7.3960, route_ids: ['17'] },
+  { id: 'sg7', city: 'guelma', name: 'Cité 1000 Logements',         latitude: 36.4700, longitude: 7.4200, route_ids: ['17'] },
+  { id: 'sg8', city: 'guelma', name: 'Guelma Gare Routière',        latitude: 36.4600, longitude: 7.4240, route_ids: ['17'] },
+  // ── Guelma — Route 18 ──────────────────────────────────────
+  { id: 'sg9',  city: 'guelma', name: 'Bouchegouf',                 latitude: 36.4800, longitude: 7.5190, route_ids: ['18'] },
+  { id: 'sg10', city: 'guelma', name: 'Ain Ben Beida',              latitude: 36.4710, longitude: 7.4890, route_ids: ['18'] },
+  { id: 'sg11', city: 'guelma', name: 'Ain Makhlouf',               latitude: 36.4020, longitude: 7.2530, route_ids: ['18'] },
   // ── Alger — Route 1 ────────────────────────────────────────
   { id: 's1',  city: 'alger', name: 'Bab Ezzouar - Université',   latitude: 36.7188, longitude:  3.1803, route_ids: ['1'] },
   { id: 's2',  city: 'alger', name: 'Les Bananiers',              latitude: 36.7243, longitude:  3.1560, route_ids: ['1'] },
@@ -126,6 +145,20 @@ export const demoStops = [
 // ROUTE STOPS (ordered)
 // ============================================================
 export const demoRouteStops = [
+  // Route 16 — Guelma
+  { route_id: '16', stop_id: 'sg1', order_index: 0 },
+  { route_id: '16', stop_id: 'sg2', order_index: 1 },
+  { route_id: '16', stop_id: 'sg3', order_index: 2 },
+  { route_id: '16', stop_id: 'sg4', order_index: 3 },
+  // Route 17 — Guelma
+  { route_id: '17', stop_id: 'sg5', order_index: 0 },
+  { route_id: '17', stop_id: 'sg6', order_index: 1 },
+  { route_id: '17', stop_id: 'sg7', order_index: 2 },
+  { route_id: '17', stop_id: 'sg8', order_index: 3 },
+  // Route 18 — Guelma
+  { route_id: '18', stop_id: 'sg9',  order_index: 0 },
+  { route_id: '18', stop_id: 'sg10', order_index: 1 },
+  { route_id: '18', stop_id: 'sg11', order_index: 2 },
   // Route 1 — Alger
   { route_id: '1', stop_id: 's1', order_index: 0 },
   { route_id: '1', stop_id: 's2', order_index: 1 },
@@ -209,6 +242,10 @@ export const demoRouteStops = [
 // BUSES
 // ============================================================
 export const demoBuses = [
+  // Guelma
+  { id: 'b16', city: 'guelma', bus_number: 'GM-001', status: 'active',      route_id: '16' },
+  { id: 'b17', city: 'guelma', bus_number: 'GM-002', status: 'active',      route_id: '17' },
+  { id: 'b18', city: 'guelma', bus_number: 'GM-003', status: 'maintenance', route_id: '18' },
   // Alger
   { id: 'b1', city: 'alger', bus_number: 'AL-001', status: 'active',      route_id: '1' },
   { id: 'b2', city: 'alger', bus_number: 'AL-002', status: 'active',      route_id: '2' },
@@ -244,4 +281,7 @@ export const demoRatings = [
   { id: 'r6', user_name: 'Amina',   route_id: '6',  rating: 4, comment: 'Ligne rapide, bon confort.',                 created_at: '2025-03-15T07:30:00Z' },
   { id: 'r7', user_name: 'Youcef',  route_id: '9',  rating: 3, comment: 'Horaires irréguliers parfois.',              created_at: '2025-03-16T12:00:00Z' },
   { id: 'r8', user_name: 'Nadia',   route_id: '11', rating: 5, comment: 'Très bon service à Annaba.',                 created_at: '2025-03-17T08:00:00Z' },
+  { id: 'r9',  user_name: 'Salim',  route_id: '16', rating: 4, comment: 'Ligne pratique pour le centre-ville.',      created_at: '2025-03-18T09:00:00Z' },
+  { id: 'r10', user_name: 'Meriem', route_id: '17', rating: 5, comment: 'Très ponctuel depuis Hammam Debagh.',        created_at: '2025-03-19T07:45:00Z' },
+  { id: 'r11', user_name: 'Hichem', route_id: '18', rating: 3, comment: 'Trajet long mais correct.',                  created_at: '2025-03-20T13:30:00Z' },
 ];

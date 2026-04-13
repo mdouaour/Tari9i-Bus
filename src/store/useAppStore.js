@@ -23,8 +23,8 @@ const useAppStore = create((set, get) => ({
     set({ language: lang });
   },
 
-  // City filter — null = all cities
-  selectedCity: null,
+  // City filter — defaults to Guelma
+  selectedCity: 'guelma',
   setSelectedCity: (cityId) => set({ selectedCity: cityId, selectedRoute: null }),
 
   // City helper
