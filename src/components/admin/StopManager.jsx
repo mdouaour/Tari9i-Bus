@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { Plus, Trash2, Edit3, Save, X, MapPin } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function StopManager() {
+  const { t } = useTranslation();
   const stops = useAppStore((s) => s.stops);
   const addStop = useAppStore((s) => s.addStop);
   const updateStop = useAppStore((s) => s.updateStop);
@@ -34,12 +36,12 @@ export default function StopManager() {
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
         <h3 className="font-semibold mb-3 flex items-center gap-2">
           <MapPin className="w-4 h-4" />
-          {editing ? 'Edit Stop' : 'Add New Stop'}
+          {editing ? t('editStop') : t('addNewStop')}
         </h3>
         <div className="space-y-3">
           <input
             type="text"
-            placeholder="Stop name"
+            placeholder={t('stopName')}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -48,7 +50,7 @@ export default function StopManager() {
             <input
               type="number"
               step="any"
-              placeholder="Latitude"
+              placeholder={t('latitude')}
               value={form.latitude}
               onChange={(e) => setForm({ ...form, latitude: e.target.value })}
               className="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -56,18 +58,18 @@ export default function StopManager() {
             <input
               type="number"
               step="any"
-              placeholder="Longitude"
+              placeholder={t('longitude')}
               value={form.longitude}
               onChange={(e) => setForm({ ...form, longitude: e.target.value })}
               className="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
-          <p className="text-xs text-slate-500">Tip: Use the map page to find coordinates by clicking on locations.</p>
+          <p className="text-xs text-slate-500">{t('stopTip')}</p>
           <div className="flex gap-2">
             {editing ? (
               <>
                 <button onClick={() => handleUpdate(editing)} className="flex-1 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-1">
-                  <Save className="w-4 h-4" /> Save
+                  <Save className="w-4 h-4" /> {t('save')}
                 </button>
                 <button onClick={() => { setEditing(null); setForm({ name: '', latitude: '', longitude: '' }); }} className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm">
                   <X className="w-4 h-4" />
@@ -75,7 +77,7 @@ export default function StopManager() {
               </>
             ) : (
               <button onClick={handleCreate} disabled={!form.name || !form.latitude || !form.longitude} className="flex-1 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-slate-300 disabled:dark:bg-slate-700 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-1">
-                <Plus className="w-4 h-4" /> Add Stop
+                <Plus className="w-4 h-4" /> {t('addStop')}
               </button>
             )}
           </div>

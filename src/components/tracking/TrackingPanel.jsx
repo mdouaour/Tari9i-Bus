@@ -1,9 +1,11 @@
 import { Radio, MapPin, Clock } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
 import { useSimulation } from '../../hooks/useSimulation';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function TrackingPanel() {
   useSimulation();
+  const { t } = useTranslation();
 
   const buses = useAppStore((s) => s.buses);
   const routes = useAppStore((s) => s.routes);
@@ -16,14 +18,14 @@ export default function TrackingPanel() {
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
         <h3 className="font-semibold mb-1 flex items-center gap-2">
           <Radio className="w-4 h-4 text-green-500 animate-pulse" />
-          Live Bus Tracking
+          {t('liveBusTracking')}
         </h3>
         <p className="text-sm text-slate-500 mb-3">
-          Simulated tracking (MVP) - positions update every 5s
+          {t('simulatedTrackingDesc')}
         </p>
 
         {activeBuses.length === 0 ? (
-          <p className="text-sm text-slate-500">No active buses.</p>
+          <p className="text-sm text-slate-500">{t('noActiveBuses')}</p>
         ) : (
           <div className="space-y-2">
             {activeBuses.map((bus) => {
@@ -47,7 +49,7 @@ export default function TrackingPanel() {
                     <div className="mt-2 pl-13 grid grid-cols-2 gap-2 text-xs text-slate-500">
                       <div className="flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
-                        Near: {location.nearStop}
+                        {t('nearStop', { name: location.nearStop })}
                       </div>
                       <div className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
@@ -63,9 +65,9 @@ export default function TrackingPanel() {
       </div>
 
       <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
-        <p className="text-sm text-amber-700 dark:text-amber-300 font-medium mb-1">📡 Tracking Mode: Simulated</p>
+        <p className="text-sm text-amber-700 dark:text-amber-300 font-medium mb-1">{t('trackingModeSimulated')}</p>
         <p className="text-xs text-amber-600 dark:text-amber-400">
-          Bus positions are simulated based on route stops. In future phases, real GPS tracking via driver mobile app will be available.
+          {t('trackingExplanation')}
         </p>
       </div>
     </div>

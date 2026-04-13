@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Star, MessageSquare, Send } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 function StarRating({ rating, onRate, size = 'md' }) {
   const [hover, setHover] = useState(0);
@@ -31,6 +32,7 @@ function StarRating({ rating, onRate, size = 'md' }) {
 }
 
 export default function RatingsPanel({ routeId }) {
+  const { t } = useTranslation();
   const routes = useAppStore((s) => s.routes);
   const getRouteRatings = useAppStore((s) => s.getRouteRatings);
   const getAverageRating = useAppStore((s) => s.getAverageRating);
@@ -69,13 +71,13 @@ export default function RatingsPanel({ routeId }) {
       {/* Route selector */}
       {!routeId && (
         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-          <label className="text-sm font-medium mb-2 block">Select Route</label>
+          <label className="text-sm font-medium mb-2 block">{t('selectRoute')}</label>
           <select
             value={selectedRouteId}
             onChange={(e) => setSelectedRouteId(e.target.value)}
             className="w-full px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            <option value="">Choose a bus route...</option>
+            <option value="">{t('chooseRoute')}</option>
             {routes.map((r) => (
               <option key={r.id} value={r.id}>
                 {r.bus_number} - {r.name}
@@ -100,7 +102,7 @@ export default function RatingsPanel({ routeId }) {
                 <h3 className="font-bold">{route.name}</h3>
                 <div className="flex items-center gap-2 text-sm text-slate-500">
                   <StarRating rating={Math.round(avgRating)} size="sm" />
-                  <span>{avgRating.toFixed(1)} ({ratings.length} reviews)</span>
+                  <span>{`${avgRating.toFixed(1)} (${t('reviewsCount', { count: ratings.length })})`}</span>
                 </div>
               </div>
             </div>
@@ -110,31 +112,31 @@ export default function RatingsPanel({ routeId }) {
           <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
             <h4 className="font-semibold mb-3 flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
-              Leave a Review
+              {t('leaveReview')}
             </h4>
 
             <div className="mb-3">
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Your Name</label>
+              <label className="text-xs font-medium text-slate-500 mb-1 block">{t('yourName')}</label>
               <input
                 type="text"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
-                placeholder="Anonymous"
+                placeholder={t('anonymous')}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
             </div>
 
             <div className="mb-3">
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Rating</label>
+              <label className="text-xs font-medium text-slate-500 mb-1 block">{t('rating')}</label>
               <StarRating rating={newRating} onRate={setNewRating} />
             </div>
 
             <div className="mb-3">
-              <label className="text-xs font-medium text-slate-500 mb-1 block">Comment</label>
+              <label className="text-xs font-medium text-slate-500 mb-1 block">{t('comment')}</label>
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Share your experience... (delay, comfort, driver behavior)"
+                placeholder={t('commentPlaceholder')}
                 rows={3}
                 className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
               />
@@ -146,15 +148,15 @@ export default function RatingsPanel({ routeId }) {
               className="w-full py-2.5 bg-primary-600 hover:bg-primary-700 disabled:bg-slate-300 disabled:dark:bg-slate-700 text-white rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2"
             >
               <Send className="w-4 h-4" />
-              Submit Review
+              {t('submitReview')}
             </button>
           </form>
 
           {/* Reviews list */}
           <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-            <h4 className="font-semibold mb-3">Reviews ({ratings.length})</h4>
+            <h4 className="font-semibold mb-3">{t('reviewsList', { count: ratings.length })}</h4>
             {ratings.length === 0 ? (
-              <p className="text-sm text-slate-500">No reviews yet. Be the first!</p>
+              <p className="text-sm text-slate-500">{t('noReviewsYet')}</p>
             ) : (
               <div className="space-y-3">
                 {ratings.map((review) => (

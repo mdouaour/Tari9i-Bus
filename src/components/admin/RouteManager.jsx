@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Plus, Trash2, Edit3, Save, X, GripVertical } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const COLORS = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
 
 export default function RouteManager() {
+  const { t } = useTranslation();
   const routes = useAppStore((s) => s.routes);
   const stops = useAppStore((s) => s.stops);
   const getRouteStops = useAppStore((s) => s.getRouteStops);
@@ -47,12 +49,12 @@ export default function RouteManager() {
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
         <h3 className="font-semibold mb-3 flex items-center gap-2">
           <Plus className="w-4 h-4" />
-          {editing ? 'Edit Route' : 'Create New Route'}
+          {editing ? t('editRoute') : t('createNewRoute')}
         </h3>
         <div className="space-y-3">
           <input
             type="text"
-            placeholder="Route name (e.g., Ligne 1 - Bab Ezzouar → Alger Centre)"
+            placeholder={t('routeNamePlaceholder')}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -60,7 +62,7 @@ export default function RouteManager() {
           <div className="flex gap-3">
             <input
               type="text"
-              placeholder="Bus number"
+              placeholder={t('busNumber')}
               value={form.bus_number}
               onChange={(e) => setForm({ ...form, bus_number: e.target.value })}
               className="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -80,7 +82,7 @@ export default function RouteManager() {
             {editing ? (
               <>
                 <button onClick={() => handleUpdate(editing)} className="flex-1 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-1">
-                  <Save className="w-4 h-4" /> Save Changes
+                  <Save className="w-4 h-4" /> {t('saveChanges')}
                 </button>
                 <button onClick={() => { setEditing(null); setForm({ name: '', bus_number: '', color: '#3b82f6' }); }} className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm">
                   <X className="w-4 h-4" />
@@ -88,7 +90,7 @@ export default function RouteManager() {
               </>
             ) : (
               <button onClick={handleCreate} disabled={!form.name || !form.bus_number} className="flex-1 py-2 bg-primary-600 hover:bg-primary-700 disabled:bg-slate-300 disabled:dark:bg-slate-700 text-white rounded-lg text-sm font-medium flex items-center justify-center gap-1">
-                <Plus className="w-4 h-4" /> Create Route
+                <Plus className="w-4 h-4" /> {t('createRoute')}
               </button>
             )}
           </div>
@@ -107,7 +109,7 @@ export default function RouteManager() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm truncate">{route.name}</p>
-                  <p className="text-xs text-slate-500">{routeStops.length} stops</p>
+                  <p className="text-xs text-slate-500">{t('stopsCount', { count: routeStops.length })}</p>
                 </div>
                 <button onClick={() => startEdit(route)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
                   <Edit3 className="w-4 h-4 text-slate-500" />
@@ -141,7 +143,7 @@ export default function RouteManager() {
                     className="flex-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-sm"
                     defaultValue=""
                   >
-                    <option value="">Select a stop...</option>
+                    <option value="">{t('selectStop')}</option>
                     {stops.filter((s) => !routeStops.find((rs) => rs.id === s.id)).map((s) => (
                       <option key={s.id} value={s.id}>{s.name}</option>
                     ))}
@@ -152,7 +154,7 @@ export default function RouteManager() {
                 </div>
               ) : (
                 <button onClick={() => setShowAddStop(route.id)} className="text-xs text-primary-600 dark:text-primary-400 hover:underline mt-1">
-                  + Add stop to route
+                  {t('addStopToRoute')}
                 </button>
               )}
             </div>
