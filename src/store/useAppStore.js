@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { demoRoutes, demoStops, demoRouteStops, demoBuses, demoRatings } from '../lib/demoData';
+import { demoRoutes, demoStops, demoRouteStops, demoBuses, demoRatings, ALGERIA_CITIES } from '../lib/demoData';
 import { languages, defaultLanguage } from '../lib/i18n';
 
 const useAppStore = create((set, get) => ({
@@ -23,7 +23,14 @@ const useAppStore = create((set, get) => ({
     set({ language: lang });
   },
 
-  // Routes
+  // City filter — null = all cities
+  selectedCity: null,
+  setSelectedCity: (cityId) => set({ selectedCity: cityId, selectedRoute: null }),
+
+  // City helper
+  getCityInfo: (cityId) => ALGERIA_CITIES.find((c) => c.id === cityId) || null,
+
+  // Routes / Stops / Buses
   routes: demoRoutes,
   stops: demoStops,
   routeStops: demoRouteStops,
@@ -32,6 +39,25 @@ const useAppStore = create((set, get) => ({
   selectedRoute: null,
 
   setSelectedRoute: (routeId) => set({ selectedRoute: routeId }),
+
+  // Filtered by selectedCity
+  getFilteredRoutes: () => {
+    const { routes, selectedCity } = get();
+    if (!selectedCity) return routes;
+    return routes.filter((r) => r.city === selectedCity);
+  },
+
+  getFilteredStops: () => {
+    const { stops, selectedCity } = get();
+    if (!selectedCity) return stops;
+    return stops.filter((s) => s.city === selectedCity);
+  },
+
+  getFilteredBuses: () => {
+    const { buses, selectedCity } = get();
+    if (!selectedCity) return buses;
+    return buses.filter((b) => b.city === selectedCity);
+  },
 
   getRouteStops: (routeId) => {
     const state = get();
@@ -114,8 +140,9 @@ const useAppStore = create((set, get) => ({
     const state = get();
     const results = [];
     const maxWalkDistance = 1.5; // km
+    const routes = state.getFilteredRoutes();
 
-    for (const route of state.routes) {
+    for (const route of routes) {
       const stops = state.getRouteStops(route.id);
       if (stops.length < 2) continue;
 

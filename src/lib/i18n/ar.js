@@ -11,9 +11,19 @@ const ar = {
   toggleDarkMode: 'تبديل الوضع الداكن',
   toggleMenu: 'تبديل القائمة',
 
+  // City
+  city: 'المدينة',
+  allCities: 'جميع مدن الجزائر',
+  selectCity: 'اختر مدينة...',
+  cityTransportNetwork: 'شبكة نقل {city}',
+  algeriaTransportNetwork: 'شبكة النقل العام في الجزائر',
+  routesInCity: 'خطوط الحافلات في {city}',
+  routesInAllCities: 'جميع خطوط الحافلات في الجزائر',
+  noRoutesInCity: 'لا توجد خطوط في هذه المدينة بعد.',
+
   // Map page
   busRoutes: 'خطوط الحافلات',
-  algiersTransportNetwork: 'شبكة النقل في الجزائر العاصمة',
+  algiersTransportNetwork: 'شبكة النقل العام في الجزائر',
   showAllRoutes: 'عرض جميع الخطوط ←',
   stopsCount: '{count} محطات',
   close: 'إغلاق',

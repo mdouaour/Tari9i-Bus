@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 CREATE TABLE IF NOT EXISTS public.buses (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   bus_number TEXT NOT NULL UNIQUE,
+  city TEXT NOT NULL DEFAULT 'alger',
   status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'maintenance', 'inactive')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS public.routes (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
   bus_number TEXT NOT NULL,
+  city TEXT NOT NULL DEFAULT 'alger',
   color TEXT NOT NULL DEFAULT '#3b82f6',
   status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
   bus_id UUID REFERENCES public.buses(id) ON DELETE SET NULL,
@@ -50,6 +52,7 @@ CREATE TABLE IF NOT EXISTS public.routes (
 CREATE TABLE IF NOT EXISTS public.stops (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
+  city TEXT NOT NULL DEFAULT 'alger',
   latitude DOUBLE PRECISION NOT NULL,
   longitude DOUBLE PRECISION NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -100,6 +103,9 @@ CREATE INDEX IF NOT EXISTS idx_route_stops_stop ON public.route_stops(stop_id);
 CREATE INDEX IF NOT EXISTS idx_bus_locations_bus ON public.bus_locations(bus_id);
 CREATE INDEX IF NOT EXISTS idx_bus_locations_timestamp ON public.bus_locations(timestamp DESC);
 CREATE INDEX IF NOT EXISTS idx_ratings_route ON public.ratings(route_id);
+CREATE INDEX IF NOT EXISTS idx_routes_city ON public.routes(city);
+CREATE INDEX IF NOT EXISTS idx_stops_city ON public.stops(city);
+CREATE INDEX IF NOT EXISTS idx_buses_city ON public.buses(city);
 
 -- ============================================================
 -- ROW LEVEL SECURITY (RLS)

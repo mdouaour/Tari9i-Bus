@@ -11,9 +11,19 @@ const fr = {
   toggleDarkMode: 'Basculer le mode sombre',
   toggleMenu: 'Basculer le menu',
 
+  // City
+  city: 'Ville',
+  allCities: 'Toutes les villes d\'Algérie',
+  selectCity: 'Choisir une ville...',
+  cityTransportNetwork: 'Réseau de transport de {city}',
+  algeriaTransportNetwork: 'Réseau de transport public algérien',
+  routesInCity: 'Lignes de bus à {city}',
+  routesInAllCities: 'Toutes les lignes de bus en Algérie',
+  noRoutesInCity: 'Aucune ligne dans cette ville pour l\'instant.',
+
   // Map page
   busRoutes: 'Lignes de Bus',
-  algiersTransportNetwork: 'Réseau de transport d\'Alger',
+  algiersTransportNetwork: 'Réseau de transport d\'Algérie',
   showAllRoutes: '← Afficher toutes les lignes',
   stopsCount: '{count} arrêts',
   close: 'Fermer',

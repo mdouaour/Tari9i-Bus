@@ -11,9 +11,19 @@ const en = {
   toggleDarkMode: 'Toggle dark mode',
   toggleMenu: 'Toggle menu',
 
+  // City
+  city: 'City',
+  allCities: 'All cities in Algeria',
+  selectCity: 'Select a city...',
+  cityTransportNetwork: '{city} transport network',
+  algeriaTransportNetwork: 'Algeria public transport network',
+  routesInCity: 'Bus routes in {city}',
+  routesInAllCities: 'All bus routes across Algeria',
+  noRoutesInCity: 'No routes in this city yet.',
+
   // Map page
   busRoutes: 'Bus Routes',
-  algiersTransportNetwork: 'Algiers transport network',
+  algiersTransportNetwork: 'Algeria transport network',
   showAllRoutes: '← Show all routes',
   stopsCount: '{count} stops',
   close: 'Close',

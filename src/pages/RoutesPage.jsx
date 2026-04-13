@@ -2,24 +2,41 @@ import { Bus, MapPin } from 'lucide-react';
 import useAppStore from '../store/useAppStore';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
+import CitySelector from '../components/common/CitySelector';
+import { ALGERIA_CITIES } from '../lib/demoData';
 
 export default function RoutesPage() {
-  const { t } = useTranslation();
-  const routes = useAppStore((s) => s.routes);
+  const { t, language } = useTranslation();
+  const selectedCity = useAppStore((s) => s.selectedCity);
+  const getFilteredRoutes = useAppStore((s) => s.getFilteredRoutes);
   const getRouteStops = useAppStore((s) => s.getRouteStops);
   const getAverageRating = useAppStore((s) => s.getAverageRating);
 
+  const routes = getFilteredRoutes();
+  const cityInfo = ALGERIA_CITIES.find((c) => c.id === selectedCity);
+  const subtitle = cityInfo
+    ? t('routesInCity', { city: language === 'ar' ? cityInfo.nameAr : cityInfo.name })
+    : t('routesInAllCities');
+
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex-1">
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Bus className="w-6 h-6 text-primary-500" />
             {t('busRoutes')}
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">{t('allAvailableRoutes')}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>
         </div>
+        <CitySelector className="sm:w-56" />
       </div>
+
+      {routes.length === 0 && (
+        <div className="text-center py-12 text-slate-400 dark:text-slate-500">
+          <Bus className="w-10 h-10 mx-auto mb-2 opacity-40" />
+          <p>{t('noRoutesInCity')}</p>
+        </div>
+      )}
 
       <div className="grid gap-3 sm:grid-cols-2">
         {routes.map((route) => {

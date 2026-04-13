@@ -1,20 +1,33 @@
 import { ChevronRight, MapPin } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import CitySelector from '../common/CitySelector';
+import { ALGERIA_CITIES } from '../../lib/demoData';
 
 export default function RouteListPanel() {
-  const { t } = useTranslation();
-  const routes = useAppStore((s) => s.routes);
+  const { t, language } = useTranslation();
+  const selectedCity = useAppStore((s) => s.selectedCity);
   const selectedRoute = useAppStore((s) => s.selectedRoute);
   const setSelectedRoute = useAppStore((s) => s.setSelectedRoute);
+  const getFilteredRoutes = useAppStore((s) => s.getFilteredRoutes);
   const getRouteStops = useAppStore((s) => s.getRouteStops);
   const getAverageRating = useAppStore((s) => s.getAverageRating);
 
+  const routes = getFilteredRoutes();
+  const cityInfo = ALGERIA_CITIES.find((c) => c.id === selectedCity);
+  const networkLabel = cityInfo
+    ? t('cityTransportNetwork', { city: language === 'ar' ? cityInfo.nameAr : cityInfo.name })
+    : t('algeriaTransportNetwork');
+
   return (
-    <div className="bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 overflow-y-auto">
-      <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-        <h2 className="text-lg font-bold">{t('busRoutes')}</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">{t('algiersTransportNetwork')}</p>
+    <div className="bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 overflow-y-auto flex flex-col h-full">
+      {/* Header */}
+      <div className="p-4 border-b border-slate-200 dark:border-slate-700 space-y-3">
+        <div>
+          <h2 className="text-lg font-bold">{t('busRoutes')}</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">{networkLabel}</p>
+        </div>
+        <CitySelector />
       </div>
 
       {selectedRoute && (
@@ -26,7 +39,12 @@ export default function RouteListPanel() {
         </button>
       )}
 
-      <div className="divide-y divide-slate-100 dark:divide-slate-800">
+      <div className="divide-y divide-slate-100 dark:divide-slate-800 flex-1 overflow-y-auto">
+        {routes.length === 0 && (
+          <p className="text-sm text-slate-400 dark:text-slate-500 px-4 py-6 text-center">
+            {t('noRoutesInCity')}
+          </p>
+        )}
         {routes.map((route) => {
           const stops = getRouteStops(route.id);
           const avgRating = getAverageRating(route.id);

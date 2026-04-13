@@ -1,8 +1,10 @@
-import { MapContainer, TileLayer, Polyline, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, Polyline, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useAppStore from '../../store/useAppStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import { ALGERIA_CITIES } from '../../lib/demoData';
 
 // Fix leaflet default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -41,30 +43,49 @@ function MapClickHandler({ onMapClick }) {
   return null;
 }
 
+// Fly to a city when selectedCity changes
+function MapViewUpdater({ selectedCity }) {
+  const map = useMap();
+  useEffect(() => {
+    const city = ALGERIA_CITIES.find((c) => c.id === selectedCity);
+    if (city) {
+      map.flyTo([city.lat, city.lng], city.zoom, { duration: 1.2 });
+    } else {
+      // Algeria overview
+      map.flyTo([28.0339, 1.6596], 5, { duration: 1.2 });
+    }
+  }, [selectedCity, map]);
+  return null;
+}
+
 export default function BusMap({ onMapClick, searchResults, className = '' }) {
   const { t } = useTranslation();
-  const routes = useAppStore((s) => s.routes);
+  const selectedCity = useAppStore((s) => s.selectedCity);
   const selectedRoute = useAppStore((s) => s.selectedRoute);
+  const getFilteredRoutes = useAppStore((s) => s.getFilteredRoutes);
   const getRouteStops = useAppStore((s) => s.getRouteStops);
   const busLocations = useAppStore((s) => s.busLocations);
   const buses = useAppStore((s) => s.buses);
   const searchOrigin = useAppStore((s) => s.searchOrigin);
   const searchDestination = useAppStore((s) => s.searchDestination);
 
-  // Algiers center
-  const center = [36.7538, 3.0588];
+  // Initial map center: Algiers
+  const initialCenter = [36.7538, 3.0588];
+  const initialZoom = 12;
 
+  const allFilteredRoutes = getFilteredRoutes();
   const routesToDisplay = selectedRoute
-    ? routes.filter((r) => r.id === selectedRoute)
-    : routes;
+    ? allFilteredRoutes.filter((r) => r.id === selectedRoute)
+    : allFilteredRoutes;
 
   return (
-    <MapContainer center={center} zoom={12} className={`w-full h-full ${className}`} zoomControl={true}>
+    <MapContainer center={initialCenter} zoom={initialZoom} className={`w-full h-full ${className}`} zoomControl={true}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
+      <MapViewUpdater selectedCity={selectedCity} />
       {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
 
       {/* Route polylines */}
@@ -103,7 +124,9 @@ export default function BusMap({ onMapClick, searchResults, className = '' }) {
       {/* Bus location markers */}
       {Object.entries(busLocations).map(([busId, loc]) => {
         const bus = buses.find((b) => b.id === busId);
-        if (!bus || (selectedRoute && bus.route_id !== selectedRoute)) return null;
+        if (!bus) return null;
+        if (selectedCity && bus.city !== selectedCity) return null;
+        if (selectedRoute && bus.route_id !== selectedRoute) return null;
         return (
           <Marker key={busId} position={[loc.latitude, loc.longitude]} icon={createBusIcon()}>
             <Popup>

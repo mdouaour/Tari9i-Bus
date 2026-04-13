@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { MapPin, Navigation, Clock, Footprints, ArrowRight, X } from 'lucide-react';
 import useAppStore from '../../store/useAppStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import CitySelector from '../common/CitySelector';
 
 export default function SearchPanel({ onSelectOnMap }) {
   const { t } = useTranslation();
-  const stops = useAppStore((s) => s.stops);
+  const getFilteredStops = useAppStore((s) => s.getFilteredStops);
   const findRoutes = useAppStore((s) => s.findRoutes);
   const searchResults = useAppStore((s) => s.searchResults);
   const searchOrigin = useAppStore((s) => s.searchOrigin);
@@ -18,6 +19,8 @@ export default function SearchPanel({ onSelectOnMap }) {
   const [destQuery, setDestQuery] = useState('');
   const [showOriginSuggestions, setShowOriginSuggestions] = useState(false);
   const [showDestSuggestions, setShowDestSuggestions] = useState(false);
+
+  const stops = getFilteredStops();
 
   const filteredOriginStops = originQuery.length > 0
     ? stops.filter((s) => s.name.toLowerCase().includes(originQuery.toLowerCase()))
@@ -62,6 +65,12 @@ export default function SearchPanel({ onSelectOnMap }) {
           <Navigation className="w-5 h-5 text-primary-500" />
           {t('findYourRoute')}
         </h2>
+
+        {/* City selector */}
+        <div className="mb-3">
+          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">{t('city')}</label>
+          <CitySelector />
+        </div>
 
         {/* Origin input */}
         <div className="relative mb-3">
