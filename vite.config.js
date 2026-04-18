@@ -25,7 +25,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /tariqi-bus:transport:wilaya:/i,
+            urlPattern: /\/api\/transport\/wilaya\/\d+/i,
             handler: 'StaleWhileRevalidate',
             options: { cacheName: 'transport-data-cache' },
           },

@@ -51,9 +51,9 @@ export default function CommentModerator() {
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-        <h3 className="font-semibold mb-2">User suggestions ({suggestions.length})</h3>
+        <h3 className="font-semibold mb-2">{t('userSuggestions', { count: suggestions.length })}</h3>
         {suggestions.length === 0 ? (
-          <p className="text-sm text-slate-500">No pending suggestions.</p>
+          <p className="text-sm text-slate-500">{t('noPendingSuggestions')}</p>
         ) : (
           <div className="space-y-2">
             {suggestions.map((suggestion) => (

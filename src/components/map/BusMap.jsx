@@ -3,6 +3,7 @@ import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap, useMapEvents 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useAppStore from '../../store/useAppStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -63,6 +64,7 @@ function MapViewportController({ selectedWilaya, wilayas, onBoundsChange }) {
 }
 
 export default function BusMap({ onMapClick, searchResults, className = '' }) {
+  const { t } = useTranslation();
   const selectedWilaya = useAppStore((state) => state.selectedWilaya);
   const wilayas = useAppStore((state) => state.wilayas);
   const selectedRoute = useAppStore((state) => state.selectedRoute);
@@ -149,13 +151,13 @@ export default function BusMap({ onMapClick, searchResults, className = '' }) {
 
       {searchOrigin && (
         <Marker position={[searchOrigin.lat, searchOrigin.lng]}>
-          <Popup>Start</Popup>
+          <Popup>{t('startPoint')}</Popup>
         </Marker>
       )}
 
       {searchDestination && (
         <Marker position={[searchDestination.lat, searchDestination.lng]}>
-          <Popup>Destination</Popup>
+          <Popup>{t('destinationPoint')}</Popup>
         </Marker>
       )}
 

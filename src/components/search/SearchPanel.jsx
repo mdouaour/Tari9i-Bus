@@ -142,11 +142,11 @@ export default function SearchPanel({ onSelectOnMap }) {
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-2">
-        <h3 className="font-semibold">Suggestions</h3>
+        <h3 className="font-semibold">{t('suggestionsTitle')}</h3>
         <textarea
           value={suggestionText}
           onChange={(event) => setSuggestionText(event.target.value)}
-          placeholder="Suggest a stop or edit"
+          placeholder={t('suggestionPlaceholder')}
           rows={3}
           className="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm resize-none"
         />
@@ -159,15 +159,26 @@ export default function SearchPanel({ onSelectOnMap }) {
           }}
           className="w-full py-2 rounded-lg bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 text-sm font-medium flex items-center justify-center gap-2"
         >
-          <Send className="w-4 h-4" /> Submit suggestion
+          <Send className="w-4 h-4" /> {t('submitSuggestion')}
         </button>
       </div>
 
       {searchResult && (
         <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-3">
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Estimated: <strong>{searchResult.estimatedTime} min</strong> · Walk {searchResult.walkToStartKm.toFixed(2)} km + {searchResult.walkFromEndKm.toFixed(2)} km
-          </p>
+          <dl className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm text-slate-600 dark:text-slate-300" aria-label="Route summary">
+            <div className="p-2 rounded bg-slate-50 dark:bg-slate-800">
+              <dt className="text-xs text-slate-500">{t('estimatedTimeLabel')}</dt>
+              <dd className="font-semibold">{searchResult.estimatedTime} min</dd>
+            </div>
+            <div className="p-2 rounded bg-slate-50 dark:bg-slate-800">
+              <dt className="text-xs text-slate-500">{t('walkToStartLabel')}</dt>
+              <dd className="font-semibold">{searchResult.walkToStartKm.toFixed(2)} km</dd>
+            </div>
+            <div className="p-2 rounded bg-slate-50 dark:bg-slate-800">
+              <dt className="text-xs text-slate-500">{t('walkFromEndLabel')}</dt>
+              <dd className="font-semibold">{searchResult.walkFromEndKm.toFixed(2)} km</dd>
+            </div>
+          </dl>
 
           <div className="space-y-2">
             {searchResult.steps.map((step) => (
@@ -191,7 +202,7 @@ export default function SearchPanel({ onSelectOnMap }) {
       {!searchResult && (
         <div className="bg-slate-50 dark:bg-slate-900/40 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-4 text-sm text-slate-500 flex items-center gap-2">
           <MapPin className="w-4 h-4" />
-          Select origin and destination to compute a multi-bus path.
+          {t('searchHint')}
         </div>
       )}
     </div>

@@ -114,6 +114,11 @@ const ar = {
   noReviewsToModerate: 'لا توجد تقييمات للمراجعة.',
   routeLabel: 'الخط: {name}',
   deleteReview: 'حذف التقييم',
+  userSuggestions: 'اقتراحات المستخدمين ({count})',
+  noPendingSuggestions: 'لا توجد اقتراحات قيد الانتظار.',
+  estimatedTimeLabel: 'الوقت المقدر',
+  walkToStartLabel: 'المشي إلى نقطة البداية',
+  walkFromEndLabel: 'المشي إلى الوجهة',
 
   // Tracking
   liveBusTracking: 'تتبع الحافلات المباشر',
@@ -127,6 +132,12 @@ const ar = {
   yourLocation: 'موقعك (نقطة البداية)',
   destinationLabel: 'الوجهة',
   busLabel: 'حافلة {number}',
+  startPoint: 'البداية',
+  destinationPoint: 'الوجهة',
+  suggestionsTitle: 'الاقتراحات',
+  suggestionPlaceholder: 'اقترح محطة أو تعديل',
+  submitSuggestion: 'إرسال الاقتراح',
+  searchHint: 'اختر نقطة الانطلاق والوجهة لحساب مسار متعدد الحافلات.',
 };
 
 export default ar;

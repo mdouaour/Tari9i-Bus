@@ -40,12 +40,33 @@ function savePreferences(preferences) {
   }
 }
 
+function persistCurrentPreferences(stateOverrides = {}) {
+  const current = useAppStore.getState();
+  const merged = { ...current, ...stateOverrides };
+  savePreferences({
+    language: merged.language,
+    selectedWilaya: merged.selectedWilaya,
+    accessibility: {
+      darkMode: merged.darkMode,
+      highContrast: merged.highContrast,
+      largeText: merged.largeText,
+    },
+  });
+}
+
 const persisted = hydratePreferences();
 const initialLanguage = persisted?.language && languages[persisted.language] ? persisted.language : defaultLanguage;
 const initialAccessibility = {
   ...defaultAccessibility,
   ...(persisted?.accessibility || {}),
 };
+// Trip-time heuristics based on average Algerian urban transit patterns:
+// - around 4 minutes between consecutive bus stops including dwell time
+// - around 12 walking minutes per kilometer in dense city areas
+// - enforce a minimum trip estimate to avoid unrealistically short results
+const MINUTES_PER_STOP = 4;
+const WALK_MINUTES_PER_KM = 12;
+const MIN_TOTAL_TRIP_MINUTES = 5;
 
 const useAppStore = create((set, get) => ({
   language: initialLanguage,
@@ -77,16 +98,7 @@ const useAppStore = create((set, get) => ({
     if (!languages[lang]) return;
     applyLanguageAttrs(lang);
     set({ language: lang });
-    const state = get();
-    savePreferences({
-      language: lang,
-      selectedWilaya: state.selectedWilaya,
-      accessibility: {
-        darkMode: state.darkMode,
-        highContrast: state.highContrast,
-        largeText: state.largeText,
-      },
-    });
+    persistCurrentPreferences({ language: lang });
   },
 
   toggleDarkMode: () => {
@@ -95,16 +107,7 @@ const useAppStore = create((set, get) => ({
       applyAccessibilityMode({ ...state, ...next });
       return next;
     });
-    const state = get();
-    savePreferences({
-      language: state.language,
-      selectedWilaya: state.selectedWilaya,
-      accessibility: {
-        darkMode: state.darkMode,
-        highContrast: state.highContrast,
-        largeText: state.largeText,
-      },
-    });
+    persistCurrentPreferences();
   },
 
   toggleHighContrast: () => {
@@ -113,16 +116,7 @@ const useAppStore = create((set, get) => ({
       applyAccessibilityMode({ ...state, ...next });
       return next;
     });
-    const state = get();
-    savePreferences({
-      language: state.language,
-      selectedWilaya: state.selectedWilaya,
-      accessibility: {
-        darkMode: state.darkMode,
-        highContrast: state.highContrast,
-        largeText: state.largeText,
-      },
-    });
+    persistCurrentPreferences();
   },
 
   toggleLargeText: () => {
@@ -131,16 +125,7 @@ const useAppStore = create((set, get) => ({
       applyAccessibilityMode({ ...state, ...next });
       return next;
     });
-    const state = get();
-    savePreferences({
-      language: state.language,
-      selectedWilaya: state.selectedWilaya,
-      accessibility: {
-        darkMode: state.darkMode,
-        highContrast: state.highContrast,
-        largeText: state.largeText,
-      },
-    });
+    persistCurrentPreferences();
   },
 
   getCityInfo: (wilayaId) => getWilayaById(wilayaId || get().selectedWilaya),
@@ -149,15 +134,7 @@ const useAppStore = create((set, get) => ({
     const parsed = Number(wilayaId);
     if (!parsed) return;
     set({ selectedWilaya: parsed, selectedCity: parsed, selectedRoute: null, selectedStop: null, searchResult: null, searchResults: null });
-    savePreferences({
-      language: get().language,
-      selectedWilaya: parsed,
-      accessibility: {
-        darkMode: get().darkMode,
-        highContrast: get().highContrast,
-        largeText: get().largeText,
-      },
-    });
+    persistCurrentPreferences({ selectedWilaya: parsed, selectedCity: parsed });
     await get().loadCurrentWilayaData(parsed);
   },
 
@@ -242,7 +219,13 @@ const useAppStore = create((set, get) => ({
       walkToStartKm: nearestFrom.distanceKm,
       walkFromEndKm: nearestTo.distanceKm,
       ...path,
-      estimatedTime: Math.max(5, Math.round((path.stops.length - 1) * 4 + (nearestFrom.distanceKm + nearestTo.distanceKm) * 12)),
+      estimatedTime: Math.max(
+        MIN_TOTAL_TRIP_MINUTES,
+        Math.round(
+          (path.stops.length - 1) * MINUTES_PER_STOP +
+            (nearestFrom.distanceKm + nearestTo.distanceKm) * WALK_MINUTES_PER_KM
+        )
+      ),
     };
 
     set({ searchOrigin: origin, searchDestination: destination, searchResult: result, searchResults: [result] });
