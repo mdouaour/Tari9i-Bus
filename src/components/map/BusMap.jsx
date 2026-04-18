@@ -1,12 +1,10 @@
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, Polyline, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import { useEffect, useMemo, useState } from 'react';
+import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useAppStore from '../../store/useAppStore';
 import { useTranslation } from '../../hooks/useTranslation';
-import { ALGERIA_CITIES } from '../../lib/demoData';
 
-// Fix leaflet default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -14,153 +12,176 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-function createStopIcon(color) {
+function stopIcon(color) {
   return L.divIcon({
     className: 'custom-stop-icon',
-    html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>`,
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
+    html: `<div style="width:12px;height:12px;border-radius:9999px;background:${color};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>`,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6],
   });
 }
 
-function createBusIcon() {
-  return L.divIcon({
-    className: 'custom-bus-icon',
-    html: `<div style="width:24px;height:24px;border-radius:50%;background:#3b82f6;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
-      <span style="font-size:12px;">🚌</span>
-    </div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-  });
-}
+const busIcon = L.divIcon({
+  className: 'custom-bus-icon',
+  html: '<div style="width:22px;height:22px;border-radius:9999px;background:#2563eb;border:2px solid #fff;display:flex;align-items:center;justify-content:center;color:white;font-size:12px">🚌</div>',
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
+});
 
 function MapClickHandler({ onMapClick }) {
   useMapEvents({
-    click(e) {
-      if (onMapClick) onMapClick(e.latlng);
+    click(event) {
+      if (onMapClick) onMapClick(event.latlng);
     },
   });
   return null;
 }
 
-// Fly to a city when selectedCity changes
-function MapViewUpdater({ selectedCity }) {
+function MapViewportController({ selectedWilaya, wilayas, onBoundsChange }) {
   const map = useMap();
+
   useEffect(() => {
-    const city = ALGERIA_CITIES.find((c) => c.id === selectedCity);
-    if (city) {
-      map.flyTo([city.lat, city.lng], city.zoom, { duration: 1.2 });
-    } else {
-      // Algeria overview
-      map.flyTo([28.0339, 1.6596], 5, { duration: 1.2 });
+    const target = wilayas.find((item) => item.id === Number(selectedWilaya));
+    if (target) {
+      map.flyTo([target.lat, target.lng], target.zoom || 12, { duration: 0.7 });
     }
-  }, [selectedCity, map]);
+  }, [map, selectedWilaya, wilayas]);
+
+  useMapEvents({
+    moveend() {
+      onBoundsChange(map.getBounds());
+    },
+    zoomend() {
+      onBoundsChange(map.getBounds());
+    },
+  });
+
+  useEffect(() => {
+    onBoundsChange(map.getBounds());
+  }, [map, onBoundsChange]);
+
   return null;
 }
 
 export default function BusMap({ onMapClick, searchResults, className = '' }) {
   const { t } = useTranslation();
-  const selectedCity = useAppStore((s) => s.selectedCity);
-  const selectedRoute = useAppStore((s) => s.selectedRoute);
-  const getFilteredRoutes = useAppStore((s) => s.getFilteredRoutes);
-  const getRouteStops = useAppStore((s) => s.getRouteStops);
-  const busLocations = useAppStore((s) => s.busLocations);
-  const buses = useAppStore((s) => s.buses);
-  const searchOrigin = useAppStore((s) => s.searchOrigin);
-  const searchDestination = useAppStore((s) => s.searchDestination);
+  const selectedWilaya = useAppStore((state) => state.selectedWilaya);
+  const wilayas = useAppStore((state) => state.wilayas);
+  const selectedRoute = useAppStore((state) => state.selectedRoute);
+  const selectedStop = useAppStore((state) => state.selectedStop);
+  const getFilteredRoutes = useAppStore((state) => state.getFilteredRoutes);
+  const getFilteredBuses = useAppStore((state) => state.getFilteredBuses);
+  const getRouteStops = useAppStore((state) => state.getRouteStops);
+  const busLocations = useAppStore((state) => state.busLocations);
+  const searchOrigin = useAppStore((state) => state.searchOrigin);
+  const searchDestination = useAppStore((state) => state.searchDestination);
+  const searchResult = useAppStore((state) => state.searchResult);
 
-  // Initial map center: Algiers
-  const initialCenter = [36.7538, 3.0588];
-  const initialZoom = 12;
+  const [mapBounds, setMapBounds] = useState(null);
 
-  const allFilteredRoutes = getFilteredRoutes();
-  const routesToDisplay = selectedRoute
-    ? allFilteredRoutes.filter((r) => r.id === selectedRoute)
-    : allFilteredRoutes;
+  const routes = getFilteredRoutes();
+  const buses = getFilteredBuses();
+
+  const routesToDisplay = selectedRoute ? routes.filter((route) => route.id === selectedRoute) : routes;
+
+  const markerStops = useMemo(() => {
+    const all = routesToDisplay.flatMap((route) =>
+      getRouteStops(route.id).map((stop) => ({
+        ...stop,
+        routeColor: route.color || '#2563eb',
+        routeName: route.name,
+      }))
+    );
+
+    const unique = new Map();
+    for (const stop of all) {
+      if (!unique.has(stop.id)) unique.set(stop.id, stop);
+    }
+
+    const values = Array.from(unique.values());
+    if (!mapBounds) return values;
+    return values.filter((stop) => mapBounds.contains([stop.latitude, stop.longitude]));
+  }, [getRouteStops, mapBounds, routesToDisplay]);
+
+  const highlightedStops = searchResults?.[0]?.stops || searchResult?.stops || [];
+  const focusedStop = selectedStop ? markerStops.find((stop) => stop.id === selectedStop) : null;
 
   return (
-    <MapContainer center={initialCenter} zoom={initialZoom} className={`w-full h-full ${className}`} zoomControl={true}>
+    <MapContainer center={[36.4622, 7.4267]} zoom={13} className={`w-full h-full ${className}`}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      <MapViewUpdater selectedCity={selectedCity} />
-      {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
+      <MapViewportController selectedWilaya={selectedWilaya} wilayas={wilayas} onBoundsChange={setMapBounds} />
+      <MapClickHandler onMapClick={onMapClick} />
 
-      {/* Route polylines */}
       {routesToDisplay.map((route) => {
-        const stops = getRouteStops(route.id);
-        if (stops.length < 2) return null;
-        const positions = stops.map((s) => [s.latitude, s.longitude]);
+        const points = getRouteStops(route.id).map((stop) => [stop.latitude, stop.longitude]);
+        if (points.length < 2) return null;
         return (
           <Polyline
             key={route.id}
-            positions={positions}
+            positions={points}
             pathOptions={{
-              color: route.color || '#3b82f6',
+              color: route.color || '#2563eb',
               weight: selectedRoute === route.id ? 5 : 3,
-              opacity: selectedRoute && selectedRoute !== route.id ? 0.3 : 0.8,
+              opacity: selectedRoute && selectedRoute !== route.id ? 0.25 : 0.8,
             }}
           />
         );
       })}
 
-      {/* Stop markers */}
-      {routesToDisplay.map((route) => {
-        const stops = getRouteStops(route.id);
-        return stops.map((stop) => (
-          <Marker key={`${route.id}-${stop.id}`} position={[stop.latitude, stop.longitude]} icon={createStopIcon(route.color || '#3b82f6')}>
-            <Popup>
-              <div className="text-sm">
-                <p className="font-semibold">{stop.name}</p>
-                <p className="text-slate-500">{route.name}</p>
-              </div>
-            </Popup>
-          </Marker>
-        ));
-      })}
+      {markerStops.map((stop) => (
+        <Marker key={stop.id} position={[stop.latitude, stop.longitude]} icon={stopIcon(stop.routeColor)}>
+          <Popup>
+            <strong>{stop.name}</strong>
+            <br />
+            <small>{stop.routeName}</small>
+          </Popup>
+        </Marker>
+      ))}
 
-      {/* Bus location markers */}
-      {Object.entries(busLocations).map(([busId, loc]) => {
-        const bus = buses.find((b) => b.id === busId);
-        if (!bus) return null;
-        if (selectedCity && bus.city !== selectedCity) return null;
+      {highlightedStops.length > 1 && (
+        <Polyline
+          positions={highlightedStops.map((stop) => [stop.latitude, stop.longitude])}
+          pathOptions={{ color: '#14b8a6', weight: 6, opacity: 0.85, dashArray: '8 6' }}
+        />
+      )}
+
+      {searchOrigin && (
+        <Marker position={[searchOrigin.lat, searchOrigin.lng]}>
+          <Popup>{t('startPoint')}</Popup>
+        </Marker>
+      )}
+
+      {searchDestination && (
+        <Marker position={[searchDestination.lat, searchDestination.lng]}>
+          <Popup>{t('destinationPoint')}</Popup>
+        </Marker>
+      )}
+
+      {focusedStop && (
+        <Marker position={[focusedStop.latitude, focusedStop.longitude]}>
+          <Popup>{focusedStop.name}</Popup>
+        </Marker>
+      )}
+
+      {buses.map((bus) => {
+        const current = busLocations[bus.id];
+        if (!current) return null;
         if (selectedRoute && bus.route_id !== selectedRoute) return null;
+
         return (
-          <Marker key={busId} position={[loc.latitude, loc.longitude]} icon={createBusIcon()}>
+          <Marker key={bus.id} position={[current.latitude, current.longitude]} icon={busIcon}>
             <Popup>
-              <div className="text-sm">
-                <p className="font-semibold">{t('busLabel', { number: bus.bus_number })}</p>
-                <p>Near: {loc.nearStop}</p>
-                <p className="text-xs text-slate-400">{new Date(loc.timestamp).toLocaleTimeString()}</p>
-              </div>
+              <strong>{bus.bus_number}</strong>
+              <br />
+              <small>{current.nearStop || 'en route'}</small>
             </Popup>
           </Marker>
         );
       })}
-
-      {/* Search origin marker */}
-      {searchOrigin && (
-        <Marker position={[searchOrigin.lat, searchOrigin.lng]}>
-          <Popup>{t('yourLocation')}</Popup>
-        </Marker>
-      )}
-
-      {/* Search destination marker */}
-      {searchDestination && (
-        <Marker position={[searchDestination.lat, searchDestination.lng]}>
-          <Popup>{t('destinationLabel')}</Popup>
-        </Marker>
-      )}
-
-      {/* Search result route highlight */}
-      {searchResults && searchResults.length > 0 && (
-        <Polyline
-          positions={searchResults[0].stopsOnRoute.map((s) => [s.latitude, s.longitude])}
-          pathOptions={{ color: '#10b981', weight: 6, opacity: 0.9, dashArray: '10, 5' }}
-        />
-      )}
     </MapContainer>
   );
 }

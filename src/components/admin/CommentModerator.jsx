@@ -5,6 +5,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 export default function CommentModerator() {
   const { t } = useTranslation();
   const ratings = useAppStore((s) => s.ratings);
+  const suggestions = useAppStore((s) => s.suggestions);
   const routes = useAppStore((s) => s.routes);
   const deleteRating = useAppStore((s) => s.deleteRating);
 
@@ -45,6 +46,22 @@ export default function CommentModerator() {
                 </div>
               );
             })}
+          </div>
+        )}
+      </div>
+
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+        <h3 className="font-semibold mb-2">{t('userSuggestions', { count: suggestions.length })}</h3>
+        {suggestions.length === 0 ? (
+          <p className="text-sm text-slate-500">{t('noPendingSuggestions')}</p>
+        ) : (
+          <div className="space-y-2">
+            {suggestions.map((suggestion) => (
+              <div key={suggestion.id} className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
+                <p className="text-sm">{suggestion.note}</p>
+                <p className="text-xs text-slate-500 mt-1">{new Date(suggestion.created_at).toLocaleString()}</p>
+              </div>
+            ))}
           </div>
         )}
       </div>

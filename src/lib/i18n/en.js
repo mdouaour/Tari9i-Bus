@@ -114,6 +114,11 @@ const en = {
   noReviewsToModerate: 'No reviews to moderate.',
   routeLabel: 'Route: {name}',
   deleteReview: 'Delete review',
+  userSuggestions: 'User suggestions ({count})',
+  noPendingSuggestions: 'No pending suggestions.',
+  estimatedTimeLabel: 'Estimated time',
+  walkToStartLabel: 'Walk to start',
+  walkFromEndLabel: 'Walk to destination',
 
   // Tracking
   liveBusTracking: 'Live Bus Tracking',
@@ -127,6 +132,12 @@ const en = {
   yourLocation: 'Your location (Start)',
   destinationLabel: 'Destination',
   busLabel: 'Bus {number}',
+  startPoint: 'Start',
+  destinationPoint: 'Destination',
+  suggestionsTitle: 'Suggestions',
+  suggestionPlaceholder: 'Suggest a stop or edit',
+  submitSuggestion: 'Submit suggestion',
+  searchHint: 'Select origin and destination to compute a multi-bus path.',
 };
 
 export default en;

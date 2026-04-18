@@ -114,6 +114,11 @@ const fr = {
   noReviewsToModerate: 'Aucun avis à modérer.',
   routeLabel: 'Ligne : {name}',
   deleteReview: 'Supprimer l\'avis',
+  userSuggestions: 'Suggestions utilisateurs ({count})',
+  noPendingSuggestions: 'Aucune suggestion en attente.',
+  estimatedTimeLabel: 'Temps estimé',
+  walkToStartLabel: 'Marche jusqu\'au départ',
+  walkFromEndLabel: 'Marche vers la destination',
 
   // Tracking
   liveBusTracking: 'Suivi des Bus en Direct',
@@ -127,6 +132,12 @@ const fr = {
   yourLocation: 'Votre position (Départ)',
   destinationLabel: 'Destination',
   busLabel: 'Bus {number}',
+  startPoint: 'Départ',
+  destinationPoint: 'Destination',
+  suggestionsTitle: 'Suggestions',
+  suggestionPlaceholder: 'Proposer un arrêt ou une correction',
+  submitSuggestion: 'Envoyer la suggestion',
+  searchHint: 'Sélectionnez un point de départ et une destination pour calculer un trajet multi-bus.',
 };
 
 export default fr;

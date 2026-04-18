@@ -22,6 +22,35 @@ html, body, #root {
   padding: 0;
 }
 
+html.large-text {
+  font-size: 18px;
+}
+
+html.high-contrast {
+  color-scheme: dark;
+}
+
+html.high-contrast body {
+  background: #000;
+  color: #fff;
+}
+
+html.high-contrast .bg-white {
+  background-color: #000 !important;
+}
+
+html.high-contrast .text-slate-500,
+html.high-contrast .text-slate-600,
+html.high-contrast .text-slate-400 {
+  color: #fff !important;
+}
+
+html.high-contrast .border-slate-200,
+html.high-contrast .border-slate-700,
+html.high-contrast .border-slate-600 {
+  border-color: #fff !important;
+}
+
 .dark .leaflet-container {
   background: #1e293b;
 }
