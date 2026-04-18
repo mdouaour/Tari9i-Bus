@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Bus, Map, Search, Star, Settings, Sun, Moon, Menu, X } from 'lucide-react';
+import { Bus, Map, Search, Star, Settings, Sun, Moon, Menu, X, Contrast, Type } from 'lucide-react';
 import { useState } from 'react';
 import useAppStore from '../../store/useAppStore';
 import { useTranslation } from '../../hooks/useTranslation';
 import { languages } from '../../lib/i18n';
 
 export default function Header() {
-  const { darkMode, toggleDarkMode, language, setLanguage } = useAppStore();
+  const { darkMode, toggleDarkMode, highContrast, toggleHighContrast, largeText, toggleLargeText, language, setLanguage } = useAppStore();
   const { t } = useTranslation();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
@@ -70,6 +70,24 @@ export default function Header() {
               aria-label={t('toggleDarkMode')}
             >
               {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+            <button
+              onClick={toggleHighContrast}
+              className={`p-2 rounded-lg transition-colors ${
+                highContrast ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800'
+              }`}
+              aria-label="Toggle high contrast"
+            >
+              <Contrast className="w-5 h-5" />
+            </button>
+            <button
+              onClick={toggleLargeText}
+              className={`p-2 rounded-lg transition-colors ${
+                largeText ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800'
+              }`}
+              aria-label="Toggle large text"
+            >
+              <Type className="w-5 h-5" />
             </button>
             <button
               onClick={() => setMenuOpen(!menuOpen)}

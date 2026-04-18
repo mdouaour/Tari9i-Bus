@@ -10,6 +10,27 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icon-192.svg', 'icon-512.svg'],
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,json}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/[a-c]\.tile\.openstreetmap\.org\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'osm-tiles-cache',
+              expiration: {
+                maxEntries: 120,
+                maxAgeSeconds: 60 * 60 * 24 * 14,
+              },
+            },
+          },
+          {
+            urlPattern: /tariqi-bus:transport:wilaya:/i,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'transport-data-cache' },
+          },
+        ],
+      },
       manifest: {
         name: 'TARIQI Bus - Smart Transport',
         short_name: 'TARIQI Bus',

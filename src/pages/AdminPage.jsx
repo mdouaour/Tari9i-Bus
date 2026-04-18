@@ -6,6 +6,7 @@ import BusManager from '../components/admin/BusManager';
 import CommentModerator from '../components/admin/CommentModerator';
 import TrackingPanel from '../components/tracking/TrackingPanel';
 import { useTranslation } from '../hooks/useTranslation';
+import CitySelector from '../components/common/CitySelector';
 
 const TAB_CONFIG = [
   { id: 'routes', icon: Route },
@@ -32,6 +33,9 @@ export default function AdminPage() {
           {t('adminDashboard')}
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">{t('manageRoutes')}</p>
+        <div className="mt-3 max-w-xs">
+          <CitySelector />
+        </div>
       </div>
 
       {/* Tabs */}

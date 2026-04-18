@@ -22,6 +22,19 @@ html, body, #root {
   padding: 0;
 }
 
+html.large-text {
+  font-size: 18px;
+}
+
+html.high-contrast {
+  filter: contrast(1.2) saturate(1.1);
+}
+
+html.high-contrast body {
+  background: #000;
+  color: #fff;
+}
+
 .dark .leaflet-container {
   background: #1e293b;
 }
