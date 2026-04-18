@@ -210,12 +210,12 @@ Tari9i-Bus/
 │   ├── core/
 │   │   ├── services/
 │   │   │   ├── cacheService.js     # localStorage caching
-│   │   │   ├── demoData.js         # Built-in sample data
+│   │   │   ├── demoData.js         # Built-in sample data (wilaya-aware)
 │   │   │   ├── routingService.js   # A→B BFS routing algorithm
 │   │   │   ├── transportService.js # Supabase ↔ cache ↔ demo data layer
 │   │   │   └── wilayas.js          # Algeria wilaya list
 │   │   ├── store/
-│   │   │   └── useTransportStore.js
+│   │   │   └── useTransportStore.js  # Transport-domain Zustand store
 │   │   └── utils/
 │   │       └── geo.js              # Haversine distance helper
 │   ├── hooks/
@@ -223,7 +223,7 @@ Tari9i-Bus/
 │   │   └── useTranslation.js       # i18n hook
 │   ├── lib/
 │   │   ├── supabase.js             # Supabase client (null in demo mode)
-│   │   ├── demoData.js
+│   │   ├── demoData.js             # Legacy demo data used by lib/ components
 │   │   └── i18n/                   # Translations (AR / FR / EN)
 │   │       ├── index.js
 │   │       ├── ar.js
@@ -236,7 +236,7 @@ Tari9i-Bus/
 │   │   ├── RoutesPage.jsx
 │   │   └── SearchPage.jsx
 │   ├── store/
-│   │   └── useAppStore.js          # Zustand global state
+│   │   └── useAppStore.js          # App-wide Zustand store (UI state, city selection)
 │   ├── App.jsx
 │   ├── main.jsx
 │   └── index.css
